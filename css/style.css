@@ -183,7 +183,7 @@ input:hover {
         width: 30%;
     }
     .check-button{
-        width: 30%;
+        width: 40%;
         font-size: 8px;
     }
     .trash-button{
@@ -191,7 +191,7 @@ input:hover {
         font-size: 10px
     }
     .undo-button{
-        width: 30%;
+        width: 40%;
         font-size: 9px;
     }
 }
