@@ -7,4 +7,7 @@
 # Technologies
     using: HTML, CSS, and JavaScript
 
+# Link Demo
+<a href= "https://book-shelf-app-five.vercel.app/">DEMO BookShelf App</a>
+
 **Made with 🧡 by Fiqih Tri**
