@@ -1,13 +1,13 @@
-const todos = [];
-const RENDER_EVENT = 'render-todo';
-const SAVED_EVENT = 'saved-todo';
-const STORAGE_KEY = 'TODO_APPS';
+const bookStorage = [];
+const RENDER_EVENT = 'render-books';
+const SAVED_EVENT = 'saved-books';
+const STORAGE_KEY = 'books';
 
 function generateId() {
     return +new Date();
 }
 
-function generateTodoObject(id, title, author, year, isComplete) {
+function generateBookObject(id, title, author, year, isComplete) {
     return {
         id,
         title,
@@ -17,18 +17,18 @@ function generateTodoObject(id, title, author, year, isComplete) {
     }
 }
 
-function findTodo(todoId) {
-    for (const todoItem of todos) {
-        if (todoItem.id === todoId) {
-            return todoItem;
+function findBook(bookId) {
+    for (const bookItem of bookStorage) {
+        if (bookItem.id === bookId) {
+            return bookItem;
         }
     }
     return null;
 }
 
-function findTodoIndex(todoId) {
-    for (const index in todos) {
-        if (todos[index].id === todoId) {
+function findBookIndex(bookId) {
+    for (const index in bookStorage) {
+        if (bookStorage[index].id === bookId) {
             return index;
         }
     }
@@ -45,7 +45,7 @@ function isStorageExist() {
 
 function saveData() {
     if (isStorageExist()) {
-        const parsed = JSON.stringify(todos);
+        const parsed = JSON.stringify(bookStorage);
         localStorage.setItem(STORAGE_KEY, parsed);
         document.dispatchEvent(new Event(SAVED_EVENT));
     }
@@ -57,8 +57,8 @@ function loadDataFromStorage() {
     let data = JSON.parse(serializedData);
 
     if (data !== null) {
-        for (const todo of data) {
-            todos.push(todo);
+        for (const book of data) {
+            bookStorage.push(book);
         }
     }
 
@@ -66,8 +66,8 @@ function loadDataFromStorage() {
 }
 
 
-function makeTodo(todoObject) {
-    const { id, title, author, year, isComplete } = todoObject;
+function makeBook(bookObject) {
+    const { id, title, author, year, isComplete } = bookObject;
 
     const textJudul = document.createElement('h2');
     textJudul.innerText = title;
@@ -85,7 +85,7 @@ function makeTodo(todoObject) {
     const container = document.createElement('div');
     container.classList.add('item', 'shadow')
     container.append(textContainer);
-    container.setAttribute('id', `todo-${id}`);
+    container.setAttribute('id', `book-${id}`);
 
     if (isComplete) {
         const undoButton = document.createElement('button');
@@ -119,46 +119,46 @@ function makeTodo(todoObject) {
     return container;
 }
 
-function addTodo() {
+function addBook() {
     const textJudul = document.getElementById('judul').value;
     const textPenulis = document.getElementById('penulis').value;
     const textTahun = document.getElementById('tahun').value;
     const iscomplete = document.getElementById('iscomplete').checked;
 
     const generatedID = generateId();
-    const todoObject = generateTodoObject(generatedID, textJudul, textPenulis, textTahun, iscomplete);
-    todos.push(todoObject);
+    const bookObject = generateBookObject(generatedID, textJudul, textPenulis, textTahun, iscomplete);
+    bookStorage.push(bookObject);
 
     document.dispatchEvent(new Event(RENDER_EVENT));
     saveData();
 }
 
-function addTaskToCompleted(todoId) {
-    const todoTarget = findTodo(todoId);
+function addTaskToCompleted(bookId) {
+    const bookTarget = findBook(bookId);
 
-    if (todoTarget == null) return;
+    if (bookTarget == null) return;
 
-    todoTarget.isComplete = true;
+    bookTarget.isComplete = true;
     document.dispatchEvent(new Event(RENDER_EVENT));
     saveData();
 }
 
-function removeTaskFromCompleted(todoId) {
-    const todoTarget = findTodoIndex(todoId);
+function removeTaskFromCompleted(bookId) {
+    const bookTarget = findBookIndex(bookId);
 
-    if (todoTarget === -1) return;
+    if (bookTarget === -1) return;
 
-    todos.splice(todoTarget, 1);
+    bookStorage.splice(bookTarget, 1);
     document.dispatchEvent(new Event(RENDER_EVENT));
     saveData();
 }
 
-function undoTaskFromCompleted(todoId) {
+function undoTaskFromCompleted(bookId) {
 
-    const todoTarget = findTodo(todoId);
-    if (todoTarget == null) return;
+    const bookTarget = findBook(bookId);
+    if (bookTarget == null) return;
 
-    todoTarget.isComplete = false;
+    bookTarget.isComplete = false;
     document.dispatchEvent(new Event(RENDER_EVENT));
     saveData();
 }
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     submitForm.addEventListener('submit', function (event) {
         event.preventDefault();
-        addTodo();
+        addBook();
 
         inputs.forEach(input => {
             input.value = '';
@@ -198,18 +198,18 @@ document.addEventListener(SAVED_EVENT, function () {
 });
 
 document.addEventListener(RENDER_EVENT, function () {
-    const uncompletedTODOList = document.getElementById('todos');
-    const listCompleted = document.getElementById('completed-todos');
+    const uncompletedBookList = document.getElementById('books');
+    const listCompleted = document.getElementById('completedBooks');
 
-    uncompletedTODOList.innerHTML = '';
+    uncompletedBookList.innerHTML = '';
     listCompleted.innerHTML = '';
 
-    for (const todoItem of todos) {
-        const todoElement = makeTodo(todoItem);
-        if (todoItem.isComplete) {
-            listCompleted.append(todoElement);
+    for (const bookItem of bookStorage) {
+        const bookElement = makeBook(bookItem);
+        if (bookItem.isComplete) {
+            listCompleted.append(bookElement);
         } else {
-            uncompletedTODOList.append(todoElement);
+            uncompletedBookList.append(bookElement);
         }
     }
 })
@@ -229,8 +229,8 @@ function search() {
     }
 }
 
-function mydelete(todoId) {
-    var id = todoId;
+function mydelete(bookId) {
+    var id = bookId;
     Swal.fire({
         title: 'Anda Yakin Untuk Menghapus Buku Ini?',
         color: "#000",
